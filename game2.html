@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Lật Thẻ - Game</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        font-family: "Poppins", Arial, sans-serif;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background:
+          radial-gradient(
+            circle at 15% 20%,
+            rgba(255, 255, 255, 0.45),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 85% 80%,
+            rgba(255, 255, 255, 0.35),
+            transparent 25%
+          ),
+          linear-gradient(135deg, #ff9ecf, #c9a7ff, #8ed8ff);
+
+        overflow-x: hidden;
+      }
+
+      /* =========================
+           GAME CONTAINER
+        ========================= */
+
+      .game-container {
+        width: min(95%, 900px);
+        padding: 30px;
+
+        background: rgba(255, 255, 255, 0.28);
+        border: 1px solid rgba(255, 255, 255, 0.45);
+
+        border-radius: 30px;
+
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+
+        box-shadow:
+          0 25px 60px rgba(91, 60, 120, 0.22),
+          inset 0 1px 2px rgba(255, 255, 255, 0.7);
+      }
+
+      /* =========================
+           HEADER
+        ========================= */
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        margin-bottom: 25px;
+        gap: 15px;
+      }
+
+      .title {
+        color: white;
+        font-size: 34px;
+        font-weight: 800;
+
+        text-shadow: 0 4px 10px rgba(100, 60, 120, 0.2);
+      }
+
+      .stats {
+        display: flex;
+        gap: 12px;
+      }
+
+      .stat {
+        min-width: 110px;
+
+        padding: 12px 16px;
+
+        background: rgba(255, 255, 255, 0.55);
+        border-radius: 18px;
+
+        text-align: center;
+
+        box-shadow: 0 6px 15px rgba(90, 60, 120, 0.12);
+      }
+
+      .stat-label {
+        display: block;
+
+        font-size: 12px;
+        font-weight: 600;
+
+        color: #9a6498;
+      }
+
+      .stat-value {
+        display: block;
+
+        margin-top: 3px;
+
+        font-size: 23px;
+        font-weight: 800;
+
+        color: #744b85;
+      }
+
+      /* =========================
+           CARD GRID
+        ========================= */
+
+      .card-grid {
+        display: grid;
+
+        grid-template-columns: repeat(6, 1fr);
+
+        gap: 12px;
+
+        perspective: 1000px;
+      }
+
+      .card {
+        aspect-ratio: 1 / 1;
+
+        cursor: pointer;
+
+        position: relative;
+
+        transform-style: preserve-3d;
+
+        transition: transform 0.5s ease;
+
+        border-radius: 18px;
+      }
+
+      .card.flipped {
+        transform: rotateY(180deg);
+      }
+
+      .card.matched {
+        transform: rotateY(180deg) scale(0.95);
+        cursor: default;
+      }
+
+      .card.disabled {
+        cursor: default;
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+
+        width: 100%;
+        height: 100%;
+
+        border-radius: 18px;
+
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Mặt úp */
+      .card-back {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.9),
+          rgba(255, 255, 255, 0.55)
+        );
+
+        border: 3px solid rgba(255, 255, 255, 0.75);
+
+        box-shadow: 0 7px 15px rgba(90, 60, 120, 0.16);
+      }
+
+      .card-back::after {
+        content: "✦";
+
+        font-size: 35px;
+
+        color: #d68cc1;
+
+        text-shadow: 0 3px 8px rgba(180, 90, 160, 0.25);
+      }
+
+      /* Mặt hình */
+      .card-front {
+        transform: rotateY(180deg);
+
+        background: rgba(255, 255, 255, 0.92);
+
+        border: 3px solid rgba(255, 255, 255, 0.8);
+
+        box-shadow: 0 7px 15px rgba(90, 60, 120, 0.15);
+
+        font-size: clamp(30px, 5vw, 48px);
+      }
+
+      /* Hiệu ứng khi ghép đúng */
+      .card.matched .card-front {
+        box-shadow:
+          0 0 0 4px rgba(255, 255, 255, 0.7),
+          0 0 25px rgba(255, 255, 255, 0.8);
+      }
+
+      /* =========================
+           BOTTOM
+        ========================= */
+
+      .bottom {
+        display: flex;
+        justify-content: center;
+
+        margin-top: 25px;
+      }
+
+      .restart-btn {
+        border: none;
+
+        padding: 13px 30px;
+
+        border-radius: 999px;
+
+        background: white;
+
+        color: #98538f;
+
+        font-size: 16px;
+        font-weight: 800;
+
+        cursor: pointer;
+
+        box-shadow:
+          0 7px 0 rgba(150, 80, 140, 0.2),
+          0 12px 25px rgba(80, 50, 100, 0.15);
+
+        transition: 0.2s;
+      }
+
+      .restart-btn:hover {
+        transform: translateY(-3px);
+      }
+
+      .restart-btn:active {
+        transform: translateY(3px);
+      }
+
+      /* =========================
+           WIN / LOSE POPUP
+        ========================= */
+
+      .overlay {
+        position: fixed;
+
+        inset: 0;
+
+        display: none;
+
+        justify-content: center;
+        align-items: center;
+
+        background: rgba(60, 40, 80, 0.45);
+
+        backdrop-filter: blur(8px);
+
+        z-index: 100;
+      }
+
+      .overlay.show {
+        display: flex;
+      }
+
+      .result-box {
+        width: min(90%, 430px);
+
+        padding: 40px 30px;
+
+        text-align: center;
+
+        background: rgba(255, 255, 255, 0.95);
+
+        border-radius: 30px;
+
+        box-shadow: 0 25px 70px rgba(50, 30, 80, 0.3);
+
+        animation: popup 0.4s ease;
+      }
+
+      @keyframes popup {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .result-icon {
+        font-size: 65px;
+
+        margin-bottom: 10px;
+      }
+
+      .result-title {
+        font-size: 35px;
+
+        color: #875187;
+
+        margin-bottom: 10px;
+      }
+
+      .result-text {
+        color: #777;
+
+        font-size: 16px;
+
+        line-height: 1.6;
+
+        margin-bottom: 25px;
+      }
+
+      .play-again {
+        border: none;
+
+        padding: 14px 35px;
+
+        border-radius: 999px;
+
+        background: linear-gradient(135deg, #ff91c8, #a98cff);
+
+        color: white;
+
+        font-size: 17px;
+
+        font-weight: 800;
+
+        cursor: pointer;
+
+        box-shadow: 0 8px 20px rgba(150, 90, 170, 0.25);
+      }
+
+      /* =========================
+           RESPONSIVE
+        ========================= */
+
+      @media (max-width: 700px) {
+        .game-container {
+          padding: 20px;
+        }
+
+        .header {
+          flex-direction: column;
+        }
+
+        .title {
+          font-size: 28px;
+        }
+
+        .card-grid {
+          grid-template-columns: repeat(6, 1fr);
+          gap: 7px;
+        }
+
+        .card {
+          border-radius: 12px;
+        }
+
+        .card-front,
+        .card-back {
+          border-radius: 12px;
+        }
+
+        .card-back::after {
+          font-size: 23px;
+        }
+
+        .stat {
+          min-width: 95px;
+        }
+      }
+
+      @media (max-width: 450px) {
+        .stats {
+          width: 100%;
+        }
+
+        .stat {
+          flex: 1;
+        }
+
+        .card-grid {
+          gap: 5px;
+        }
+
+        .card-front {
+          font-size: 25px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="game-container">
+      <!-- HEADER -->
+      <div class="header">
+        <div class="title">🃏 Lật Thẻ</div>
+
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-label"> ĐIỂM </span>
+
+            <span class="stat-value" id="score"> 0 / 18 </span>
+          </div>
+
+          <div class="stat">
+            <span class="stat-label"> THỜI GIAN </span>
+
+            <span class="stat-value" id="timer"> 10:00 </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 18 CARDS -->
+      <div class="card-grid" id="cardGrid"></div>
+
+      <!-- RESTART -->
+      <div class="bottom">
+        <button class="restart-btn" onclick="restartGame()">🔄 Chơi lại</button>
+      </div>
+    </div>
+
+    <!-- RESULT POPUP -->
+    <div class="overlay" id="overlay">
+      <div class="result-box">
+        <div class="result-icon" id="resultIcon">🎉</div>
+
+        <h2 class="result-title" id="resultTitle">Bạn thắng!</h2>
+
+        <p class="result-text" id="resultText">
+          Bạn đã tìm được tất cả các cặp thẻ!
+        </p>
+
+        <button class="play-again" onclick="restartGame()">Chơi lại</button>
+      </div>
+    </div>
+
+    <script>
+      /* =====================================
+           DỮ LIỆU GAME
+        ===================================== */
+
+      const symbols = ["🍎", "🍓", "🍉", "🍊", "🍋", "🍒", "🍇", "🥝", "🍑"];
+
+      let cards = [];
+
+      let firstCard = null;
+      let secondCard = null;
+
+      let lockBoard = false;
+
+      let score = 0;
+
+      let matchedPairs = 0;
+
+      let timeLeft = 600; // 10 phút = 600 giây
+
+      let timerInterval = null;
+
+      let gameEnded = false;
+
+      /* =====================================
+           TRỘN MẢNG
+        ===================================== */
+
+      function shuffle(array) {
+        const shuffled = [...array];
+
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        return shuffled;
+      }
+
+      /* =====================================
+           TẠO GAME
+        ===================================== */
+
+      function createGame() {
+        const cardGrid = document.getElementById("cardGrid");
+
+        cardGrid.innerHTML = "";
+
+        /*
+                Mỗi biểu tượng xuất hiện 2 lần
+                => 9 cặp
+                => 18 thẻ
+            */
+
+        cards = shuffle([...symbols, ...symbols]);
+
+        cards.forEach((symbol, index) => {
+          const card = document.createElement("div");
+
+          card.classList.add("card");
+
+          card.dataset.symbol = symbol;
+
+          card.innerHTML = `
+
+                    <div class="card-front">
+                        ${symbol}
+                    </div>
+
+                    <div class="card-back"></div>
+
+                `;
+
+          card.addEventListener("click", flipCard);
+
+          cardGrid.appendChild(card);
+        });
+      }
+
+      /* =====================================
+           LẬT THẺ
+        ===================================== */
+
+      function flipCard() {
+        if (
+          lockBoard ||
+          gameEnded ||
+          this === firstCard ||
+          this.classList.contains("matched") ||
+          this.classList.contains("flipped")
+        ) {
+          return;
+        }
+
+        this.classList.add("flipped");
+
+        if (!firstCard) {
+          firstCard = this;
+
+          return;
+        }
+
+        secondCard = this;
+
+        checkMatch();
+      }
+
+      /* =====================================
+           KIỂM TRA 2 THẺ
+        ===================================== */
+
+      function checkMatch() {
+        const isMatch = firstCard.dataset.symbol === secondCard.dataset.symbol;
+
+        if (isMatch) {
+          matchCards();
+        } else {
+          unflipCards();
+        }
+      }
+
+      /* =====================================
+           ĐÚNG
+        ===================================== */
+
+      function matchCards() {
+        firstCard.classList.add("matched");
+
+        secondCard.classList.add("matched");
+
+        /*
+                Mỗi cặp = 2 điểm
+
+                9 cặp × 2 = 18 điểm
+            */
+
+        score += 2;
+
+        matchedPairs++;
+
+        updateScore();
+
+        resetCards();
+
+        /*
+                Đủ 9 cặp
+                => 18/18
+            */
+
+        if (matchedPairs === 9) {
+          winGame();
+        }
+      }
+
+      /* =====================================
+           SAI
+        ===================================== */
+
+      function unflipCards() {
+        lockBoard = true;
+
+        setTimeout(() => {
+          firstCard.classList.remove("flipped");
+
+          secondCard.classList.remove("flipped");
+
+          resetCards();
+        }, 800);
+      }
+
+      /* =====================================
+           RESET LƯỢT
+        ===================================== */
+
+      function resetCards() {
+        [firstCard, secondCard] = [null, null];
+
+        lockBoard = false;
+      }
+
+      /* =====================================
+           CẬP NHẬT ĐIỂM
+        ===================================== */
+
+      function updateScore() {
+        document.getElementById("score").textContent = `${score} / 18`;
+      }
+
+      /* =====================================
+           TIMER
+        ===================================== */
+
+      function startTimer() {
+        clearInterval(timerInterval);
+
+        timeLeft = 600;
+
+        updateTimer();
+
+        timerInterval = setInterval(() => {
+          if (gameEnded) {
+            clearInterval(timerInterval);
+
+            return;
+          }
+
+          timeLeft--;
+
+          updateTimer();
+
+          if (timeLeft <= 0) {
+            timeLeft = 0;
+
+            updateTimer();
+
+            loseGame();
+          }
+        }, 1000);
+      }
+
+      /* =====================================
+           HIỂN THỊ THỜI GIAN
+        ===================================== */
+
+      function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+
+        const seconds = timeLeft % 60;
+
+        document.getElementById("timer").textContent =
+          `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      }
+
+      /* =====================================
+           THẮNG
+        ===================================== */
+
+      function winGame() {
+        gameEnded = true;
+
+        clearInterval(timerInterval);
+
+        document.getElementById("resultIcon").textContent = "🎉";
+
+        document.getElementById("resultTitle").textContent = "Bạn thắng!";
+
+        document.getElementById("resultText").textContent =
+          `Xuất sắc! Bạn đã đạt ${score}/18 điểm và tìm được tất cả 9 cặp thẻ.`;
+
+        document.getElementById("overlay").classList.add("show");
+      }
+
+      /* =====================================
+           THUA
+        ===================================== */
+
+      function loseGame() {
+        gameEnded = true;
+
+        clearInterval(timerInterval);
+
+        lockBoard = true;
+
+        document.getElementById("resultIcon").textContent = "⏰";
+
+        document.getElementById("resultTitle").textContent = "Hết giờ!";
+
+        document.getElementById("resultText").textContent =
+          `Bạn đạt ${score}/18 điểm. Hãy thử lại và phá kỷ lục của mình nhé!`;
+
+        document.getElementById("overlay").classList.add("show");
+      }
+
+      /* =====================================
+           CHƠI LẠI
+        ===================================== */
+
+      function restartGame() {
+        clearInterval(timerInterval);
+
+        firstCard = null;
+
+        secondCard = null;
+
+        lockBoard = false;
+
+        score = 0;
+
+        matchedPairs = 0;
+
+        timeLeft = 600;
+
+        gameEnded = false;
+
+        updateScore();
+
+        updateTimer();
+
+        document.getElementById("overlay").classList.remove("show");
+
+        /*
+                QUAN TRỌNG:
+
+                createGame() tạo lại 18 thẻ
+                và shuffle() lại vị trí.
+
+                => Mỗi lần chơi
+                => thẻ sẽ có vị trí khác nhau.
+            */
+
+        createGame();
+
+        startTimer();
+      }
+
+      /* =====================================
+           BẮT ĐẦU GAME
+        ===================================== */
+
+      restartGame();
+    </script>
+  </body>
+</html>

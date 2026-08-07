@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lật Thẻ</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        font-family: "Poppins", Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+
+        background:
+          radial-gradient(
+            circle at 20% 20%,
+            rgba(255, 255, 255, 0.45),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 80% 80%,
+            rgba(255, 255, 255, 0.35),
+            transparent 25%
+          ),
+          linear-gradient(135deg, #ff9ecf, #c9a7ff, #8ed8ff);
+      }
+
+      /* Những hình tròn trang trí */
+      .bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(3px);
+        animation: float 5s ease-in-out infinite;
+      }
+
+      .bubble:nth-child(1) {
+        width: 180px;
+        height: 180px;
+        top: -50px;
+        left: -40px;
+      }
+
+      .bubble:nth-child(2) {
+        width: 120px;
+        height: 120px;
+        right: 8%;
+        top: 12%;
+        animation-delay: 1s;
+      }
+
+      .bubble:nth-child(3) {
+        width: 220px;
+        height: 220px;
+        right: -70px;
+        bottom: -70px;
+        animation-delay: 2s;
+      }
+
+      .bubble:nth-child(4) {
+        width: 90px;
+        height: 90px;
+        left: 12%;
+        bottom: 15%;
+        animation-delay: 3s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+
+        50% {
+          transform: translateY(-18px);
+        }
+      }
+
+      /* Khung chính */
+      .game-container {
+        position: relative;
+        z-index: 2;
+        width: min(90%, 650px);
+        padding: 65px 40px 55px;
+
+        text-align: center;
+
+        background: rgba(255, 255, 255, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-radius: 35px;
+
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+
+        box-shadow:
+          0 25px 60px rgba(91, 60, 120, 0.22),
+          inset 0 1px 1px rgba(255, 255, 255, 0.6);
+
+        animation: appear 0.8s ease;
+      }
+
+      @keyframes appear {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* Icon */
+      .game-icon {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 25px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        font-size: 55px;
+
+        background: rgba(255, 255, 255, 0.55);
+        border-radius: 28px;
+
+        box-shadow:
+          0 12px 25px rgba(91, 60, 120, 0.15),
+          inset 0 1px 2px white;
+
+        transform: rotate(-5deg);
+      }
+
+      /* Tên game */
+      h1 {
+        font-size: clamp(48px, 10vw, 82px);
+        font-weight: 800;
+        letter-spacing: -3px;
+
+        color: white;
+
+        text-shadow:
+          0 5px 0 rgba(155, 82, 150, 0.18),
+          0 10px 25px rgba(100, 60, 120, 0.2);
+
+        margin-bottom: 12px;
+      }
+
+      .subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 17px;
+        font-weight: 500;
+        margin-bottom: 38px;
+      }
+
+      /* Nút Start */
+      .start-btn {
+        border: none;
+        cursor: pointer;
+
+        min-width: 220px;
+        padding: 18px 45px;
+
+        border-radius: 999px;
+
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: 2px;
+
+        color: #9b4f91;
+
+        background: white;
+
+        box-shadow:
+          0 10px 0 rgba(155, 79, 145, 0.2),
+          0 18px 30px rgba(80, 50, 100, 0.18);
+
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+
+      .start-btn:hover {
+        transform: translateY(-4px) scale(1.03);
+
+        box-shadow:
+          0 14px 0 rgba(155, 79, 145, 0.2),
+          0 22px 35px rgba(80, 50, 100, 0.22);
+      }
+
+      .start-btn:active {
+        transform: translateY(5px) scale(0.98);
+
+        box-shadow:
+          0 4px 0 rgba(155, 79, 145, 0.2),
+          0 8px 15px rgba(80, 50, 100, 0.15);
+      }
+
+      /* Dòng nhỏ phía dưới */
+      .hint {
+        margin-top: 25px;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 13px;
+      }
+
+      /* Màn hình game sau khi Start */
+      .game-screen {
+        display: none;
+        color: white;
+      }
+
+      .game-screen h2 {
+        font-size: 40px;
+        margin-bottom: 15px;
+      }
+
+      .back-btn {
+        margin-top: 25px;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      @media (max-width: 500px) {
+        .game-container {
+          padding: 45px 20px;
+        }
+
+        .game-icon {
+          width: 80px;
+          height: 80px;
+          font-size: 42px;
+        }
+
+        .subtitle {
+          font-size: 14px;
+        }
+
+        .start-btn {
+          min-width: 190px;
+          padding: 16px 35px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Background decoration -->
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+
+    <main class="game-container" id="menu">
+      <div class="game-icon">🃏</div>
+
+      <h1>Lật Thẻ</h1>
+
+      <p class="subtitle">Lật thẻ • Tìm cặp giống nhau • Thử thách trí nhớ</p>
+
+      <button class="start-btn" onclick="startGame()">START</button>
+
+      <p class="hint">✨ Sẵn sàng chưa?</p>
+    </main>
+
+    <script>
+      function startGame() {
+        window.location.href = "game2.html";
+      }
+    </script>
+  </body>
+</html>
