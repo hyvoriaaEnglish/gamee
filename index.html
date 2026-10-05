@@ -1,284 +1,491 @@
 <!doctype html>
-<html lang="vi">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lật Thẻ</title>
-
+    <title>🎵 Cute Music & Culture Quiz 🌸</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <style>
       * {
+        box-sizing: border-box;
         margin: 0;
         padding: 0;
-        box-sizing: border-box;
+        font-family: "Nunito", sans-serif;
       }
 
       body {
+        background: linear-gradient(
+          135deg,
+          #fbcfe8 0%,
+          #e0e7ff 50%,
+          #c7d2fe 100%
+        );
+        color: #475569;
         min-height: 100vh;
-        font-family: "Poppins", Arial, sans-serif;
+        padding: 30px 15px;
         display: flex;
         justify-content: center;
-        align-items: center;
-        overflow: hidden;
-
-        background:
-          radial-gradient(
-            circle at 20% 20%,
-            rgba(255, 255, 255, 0.45),
-            transparent 25%
-          ),
-          radial-gradient(
-            circle at 80% 80%,
-            rgba(255, 255, 255, 0.35),
-            transparent 25%
-          ),
-          linear-gradient(135deg, #ff9ecf, #c9a7ff, #8ed8ff);
       }
 
-      /* Những hình tròn trang trí */
-      .bubble {
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.18);
-        backdrop-filter: blur(3px);
-        animation: float 5s ease-in-out infinite;
+      .quiz-container {
+        max-width: 780px;
+        width: 100%;
       }
 
-      .bubble:nth-child(1) {
-        width: 180px;
-        height: 180px;
-        top: -50px;
-        left: -40px;
-      }
-
-      .bubble:nth-child(2) {
-        width: 120px;
-        height: 120px;
-        right: 8%;
-        top: 12%;
-        animation-delay: 1s;
-      }
-
-      .bubble:nth-child(3) {
-        width: 220px;
-        height: 220px;
-        right: -70px;
-        bottom: -70px;
-        animation-delay: 2s;
-      }
-
-      .bubble:nth-child(4) {
-        width: 90px;
-        height: 90px;
-        left: 12%;
-        bottom: 15%;
-        animation-delay: 3s;
-      }
-
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-
-        50% {
-          transform: translateY(-18px);
-        }
-      }
-
-      /* Khung chính */
-      .game-container {
-        position: relative;
-        z-index: 2;
-        width: min(90%, 650px);
-        padding: 65px 40px 55px;
-
+      .header {
         text-align: center;
-
-        background: rgba(255, 255, 255, 0.25);
-        border: 1px solid rgba(255, 255, 255, 0.45);
-        border-radius: 35px;
-
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-
-        box-shadow:
-          0 25px 60px rgba(91, 60, 120, 0.22),
-          inset 0 1px 1px rgba(255, 255, 255, 0.6);
-
-        animation: appear 0.8s ease;
+        margin-bottom: 25px;
+        background: rgba(255, 255, 255, 0.85);
+        padding: 25px;
+        border-radius: 24px;
+        box-shadow: 0 10px 25px rgba(244, 114, 182, 0.15);
+        backdrop-filter: blur(8px);
+        border: 2px solid #f472b6;
       }
 
-      @keyframes appear {
-        from {
-          opacity: 0;
-          transform: translateY(30px) scale(0.95);
-        }
-
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
+      .header h1 {
+        font-size: 2.2rem;
+        color: #db2777;
+        font-weight: 800;
+        margin-bottom: 6px;
       }
 
-      /* Icon */
-      .game-icon {
-        width: 100px;
-        height: 100px;
-        margin: 0 auto 25px;
+      .header p {
+        color: #64748b;
+        font-size: 1.05rem;
+        font-weight: 600;
+      }
 
+      .score-board {
+        position: sticky;
+        top: 15px;
+        background: #ffffff;
+        padding: 14px 24px;
+        border-radius: 50px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
-
-        font-size: 55px;
-
-        background: rgba(255, 255, 255, 0.55);
-        border-radius: 28px;
-
-        box-shadow:
-          0 12px 25px rgba(91, 60, 120, 0.15),
-          inset 0 1px 2px white;
-
-        transform: rotate(-5deg);
-      }
-
-      /* Tên game */
-      h1 {
-        font-size: clamp(48px, 10vw, 82px);
+        margin-bottom: 25px;
+        z-index: 100;
+        border: 3px solid #f472b6;
         font-weight: 800;
-        letter-spacing: -3px;
-
-        color: white;
-
-        text-shadow:
-          0 5px 0 rgba(155, 82, 150, 0.18),
-          0 10px 25px rgba(100, 60, 120, 0.2);
-
-        margin-bottom: 12px;
+        font-size: 1.05rem;
       }
 
-      .subtitle {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 17px;
-        font-weight: 500;
-        margin-bottom: 38px;
-      }
-
-      /* Nút Start */
-      .start-btn {
-        border: none;
-        cursor: pointer;
-
-        min-width: 220px;
-        padding: 18px 45px;
-
-        border-radius: 999px;
-
-        font-size: 22px;
-        font-weight: 800;
-        letter-spacing: 2px;
-
-        color: #9b4f91;
-
-        background: white;
-
-        box-shadow:
-          0 10px 0 rgba(155, 79, 145, 0.2),
-          0 18px 30px rgba(80, 50, 100, 0.18);
-
-        transition:
-          transform 0.15s ease,
-          box-shadow 0.15s ease;
-      }
-
-      .start-btn:hover {
-        transform: translateY(-4px) scale(1.03);
-
-        box-shadow:
-          0 14px 0 rgba(155, 79, 145, 0.2),
-          0 22px 35px rgba(80, 50, 100, 0.22);
-      }
-
-      .start-btn:active {
-        transform: translateY(5px) scale(0.98);
-
-        box-shadow:
-          0 4px 0 rgba(155, 79, 145, 0.2),
-          0 8px 15px rgba(80, 50, 100, 0.15);
-      }
-
-      /* Dòng nhỏ phía dưới */
-      .hint {
-        margin-top: 25px;
-        color: rgba(255, 255, 255, 0.75);
-        font-size: 13px;
-      }
-
-      /* Màn hình game sau khi Start */
-      .game-screen {
-        display: none;
-        color: white;
-      }
-
-      .game-screen h2 {
-        font-size: 40px;
-        margin-bottom: 15px;
-      }
-
-      .back-btn {
-        margin-top: 25px;
-        padding: 12px 25px;
-        border: none;
+      .score-badge {
+        background: #fce7f3;
+        color: #db2777;
+        padding: 6px 16px;
         border-radius: 20px;
-        cursor: pointer;
-        font-weight: bold;
       }
 
-      @media (max-width: 500px) {
-        .game-container {
-          padding: 45px 20px;
-        }
+      .section-title {
+        background: linear-gradient(90deg, #f472b6, #a855f7);
+        color: #ffffff;
+        padding: 12px 20px;
+        border-radius: 16px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        margin: 30px 0 18px 0;
+        box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
+        display: inline-block;
+      }
 
-        .game-icon {
-          width: 80px;
-          height: 80px;
-          font-size: 42px;
-        }
+      .card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 22px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+        border: 2px solid #f1f5f9;
+        transition: transform 0.2s ease;
+      }
 
-        .subtitle {
-          font-size: 14px;
-        }
+      .card:hover {
+        transform: translateY(-2px);
+      }
 
-        .start-btn {
-          min-width: 190px;
-          padding: 16px 35px;
-        }
+      .question {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: #1e293b;
+        line-height: 1.5;
+      }
+
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .btn-option {
+        background-color: #f8fafc;
+        color: #334155;
+        border: 2px solid #e2e8f0;
+        padding: 12px 18px;
+        border-radius: 14px;
+        font-size: 0.98rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s ease;
+      }
+
+      .btn-option:hover:not([disabled]) {
+        background-color: #f0fdf4;
+        border-color: #f472b6;
+        color: #db2777;
+        transform: translateX(4px);
+      }
+
+      .btn-option.correct {
+        background-color: #dcfce7 !important;
+        border-color: #22c55e !important;
+        color: #15803d !important;
+        font-weight: 800;
+      }
+
+      .btn-option.incorrect {
+        background-color: #ffe4e6 !important;
+        border-color: #f43f5e !important;
+        color: #be123c !important;
+      }
+
+      .btn-option:disabled {
+        cursor: not-allowed;
+        opacity: 0.85;
+      }
+
+      .feedback {
+        margin-top: 15px;
+        padding: 14px 18px;
+        border-radius: 14px;
+        font-size: 0.95rem;
+        display: none;
+        line-height: 1.5;
+      }
+
+      .feedback.correct {
+        display: block;
+        background-color: #f0fdf4;
+        color: #166534;
+        border: 2px solid #86efac;
+      }
+
+      .feedback.incorrect {
+        display: block;
+        background-color: #fff1f2;
+        color: #9f1239;
+        border: 2px solid #fca5a5;
+      }
+
+      .explanation-title {
+        font-weight: 800;
+        margin-bottom: 4px;
+        display: block;
       }
     </style>
   </head>
-
   <body>
-    <!-- Background decoration -->
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
+    <div class="quiz-container">
+      <div class="header">
+        <h1>✨ Music Presentation Quiz ✨</h1>
+        <p>Interactive & Cute Mini-Game 🎧🌸</p>
+      </div>
 
-    <main class="game-container" id="menu">
-      <div class="game-icon">🃏</div>
+      <div class="score-board">
+        <div class="score-badge">Score: <span id="score">0</span> / 10 ⭐</div>
+        <div>Answered: <span id="answered">0</span> / 10 📝</div>
+      </div>
 
-      <h1>Lật Thẻ</h1>
+      <!-- PART 1 -->
+      <div class="section-title">📜 Part 1: History & Evolution of Music</div>
 
-      <p class="subtitle">Lật thẻ • Tìm cặp giống nhau • Thử thách trí nhớ</p>
+      <div class="card" id="q1">
+        <div class="question">
+          1. Which musical period is best known for Gregorian Chant (monophonic
+          sacred vocal music sung in Latin)?
+        </div>
+        <div class="options">
+          <button class="btn-option" onclick="checkAnswer('q1', 0, false)">
+            A. Ancient Music (~3000 BCE–500 CE)
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q1', 1, true)">
+            B. Medieval Music (500–1400)
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q1', 2, false)">
+            C. Renaissance & Baroque (1400–1750)
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q1', 3, false)">
+            D. Classical & Romantic (1750–1910)
+          </button>
+        </div>
+        <div class="feedback" id="q1-fb"></div>
+      </div>
 
-      <button class="start-btn" onclick="startGame()">START</button>
+      <div class="card" id="q2">
+        <div class="question">
+          2. Major genres like Opera and Concerto, alongside polyphonic music,
+          emerged during which period?
+        </div>
+        <div class="options">
+          <button class="btn-option" onclick="checkAnswer('q2', 0, false)">
+            A. Ancient Music
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q2', 1, true)">
+            B. Renaissance & Baroque
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q2', 2, false)">
+            C. Classical & Romantic
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q2', 3, false)">
+            D. Modern Music
+          </button>
+        </div>
+        <div class="feedback" id="q2-fb"></div>
+      </div>
 
-      <p class="hint">✨ Sẵn sàng chưa?</p>
-    </main>
+      <div class="card" id="q3">
+        <div class="question">
+          3. Legendary composers like W. A. Mozart and L. v. Beethoven (early
+          period) represent which musical era?
+        </div>
+        <div class="options">
+          <button class="btn-option" onclick="checkAnswer('q3', 0, false)">
+            A. Medieval Music
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q3', 1, true)">
+            B. Classical Music
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q3', 2, false)">
+            C. Baroque Music
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q3', 3, false)">
+            D. Modern Music
+          </button>
+        </div>
+        <div class="feedback" id="q3-fb"></div>
+      </div>
+
+      <div class="card" id="q4">
+        <div class="question">
+          4. Which modern genre, known for its catchy melodies and global
+          popularity, features famous acts like BTS and BLACKPINK?
+        </div>
+        <div class="options">
+          <button class="btn-option" onclick="checkAnswer('q4', 0, false)">
+            A. Jazz
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q4', 1, false)">
+            B. Rock
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q4', 2, true)">
+            C. K-pop
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q4', 3, false)">
+            D. Opera
+          </button>
+        </div>
+        <div class="feedback" id="q4-fb"></div>
+      </div>
+
+      <!-- PART 2 -->
+      <div class="section-title">🌍 Part 2: Music and Culture</div>
+
+      <div class="card" id="q5">
+        <div class="question">
+          5. When music reflects the traditions, history, and values of a
+          community, which cultural role does it perform?
+        </div>
+        <div class="options">
+          <button class="btn-option" onclick="checkAnswer('q5', 0, true)">
+            A. Music reflects culture
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q5', 1, false)">
+            B. Music connects cultures
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q5', 2, false)">
+            C. Music preserves culture
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q5', 3, false)">
+            D. Music limits culture
+          </button>
+        </div>
+        <div class="feedback" id="q5-fb"></div>
+      </div>
+
+      <div class="card" id="q6">
+        <div class="question">
+          6. Global genres like K-pop or Jazz blending different international
+          styles are clear examples of which concept?
+        </div>
+        <div class="options">
+          <button class="btn-option" onclick="checkAnswer('q6', 0, false)">
+            A. Music creates barriers between countries.
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q6', 1, true)">
+            B. Music connects cultures.
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q6', 2, false)">
+            C. Music destroys local traditions completely.
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q6', 3, false)">
+            D. Music only exists in ancient rituals.
+          </button>
+        </div>
+        <div class="feedback" id="q6-fb"></div>
+      </div>
+
+      <div class="card" id="q7">
+        <div class="question">
+          7. Passing down epic stories, heritage, and native languages across
+          generations through song is an example of:
+        </div>
+        <div class="options">
+          <button class="btn-option" onclick="checkAnswer('q7', 0, true)">
+            A. Music preserving culture
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q7', 1, false)">
+            B. Music causing distraction
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q7', 2, false)">
+            C. Music weakening language skills
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q7', 3, false)">
+            D. Music replacing history textbooks
+          </button>
+        </div>
+        <div class="feedback" id="q7-fb"></div>
+      </div>
+
+      <!-- PART 3 -->
+      <div class="section-title">🧠 Part 3: Impact of Music on Daily Life</div>
+
+      <div class="card" id="q8">
+        <div class="question">
+          8. Which brain chemical (neurotransmitter) is released when listening
+          to music, helping improve mood and reduce stress?
+        </div>
+        <div class="options">
+          <button class="btn-option" onclick="checkAnswer('q8', 0, false)">
+            A. Melatonin
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q8', 1, true)">
+            B. Dopamine
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q8', 2, false)">
+            C. Adrenaline
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q8', 3, false)">
+            D. Insulin
+          </button>
+        </div>
+        <div class="feedback" id="q8-fb"></div>
+      </div>
+
+      <div class="card" id="q9">
+        <div class="question">
+          9. Which type of music is generally best recommended for boosting
+          concentration during study or work?
+        </div>
+        <div class="options">
+          <button class="btn-option" onclick="checkAnswer('q9', 0, false)">
+            A. Heavy metal at high volume
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q9', 1, false)">
+            B. Loud songs with fast lyrics
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q9', 2, true)">
+            C. Instrumental, Lofi, or Classical music
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q9', 3, false)">
+            D. High-tempo EDM/Dance music
+          </button>
+        </div>
+        <div class="feedback" id="q9-fb"></div>
+      </div>
+
+      <div class="card" id="q10">
+        <div class="question">
+          10. Which of the following is NOT a negative effect (negative side) of
+          music?
+        </div>
+        <div class="options">
+          <button class="btn-option" onclick="checkAnswer('q10', 0, false)">
+            A. Listening to loud lyrics causing study distraction
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q10', 1, false)">
+            B. Listening at high volume causing hearing damage
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q10', 2, true)">
+            C. Helping improve memory and exercise motivation
+          </button>
+          <button class="btn-option" onclick="checkAnswer('q10', 3, false)">
+            D. Listening to extremely sad songs worsening a depressed mood
+          </button>
+        </div>
+        <div class="feedback" id="q10-fb"></div>
+      </div>
+    </div>
 
     <script>
-      function startGame() {
-        window.location.href = "game2.html";
+      const explanations = {
+        q1: "Medieval Music (500–1400) was heavily shaped by the Catholic Church, making sacred monophonic Gregorian Chants its main feature.",
+        q2: "Renaissance & Baroque (1400–1750) introduced complex polyphony along with grand genres like Opera and Concerto.",
+        q3: "Mozart and early Beethoven defined the Classical Period (1750–1820), focusing on clarity, balance, and formal structures.",
+        q4: "K-pop is a global phenomenon from Modern Music, famous for pop melodies, choreography, and group acts like BTS & BLACKPINK.",
+        q5: "Music reflects culture because it acts as a mirror showing a community's unique traditions, history, and core values.",
+        q6: "Global genres like K-pop and Jazz prove how globalization allows different cultural styles to blend together and connect cultures.",
+        q7: "Songs help preserve culture by passing down oral histories, native languages, and folk legends through generations.",
+        q8: "Dopamine is the 'feel-good' brain chemical released when listening to favorite tunes, reducing stress and boosting mood.",
+        q9: "Instrumental, Lofi, or Classical music lacks distracting lyrics, helping the brain stay focused and retain information better.",
+        q10: "Improving memory and exercise motivation is actually a positive benefit of music, not a negative side effect.",
+      };
+
+      let currentScore = 0;
+      let totalAnswered = 0;
+
+      function checkAnswer(questionId, selectedIdx, isCorrect) {
+        const card = document.getElementById(questionId);
+        const buttons = card.querySelectorAll(".btn-option");
+        const feedback = document.getElementById(questionId + "-fb");
+
+        buttons.forEach((btn, index) => {
+          btn.disabled = true;
+          if (index === selectedIdx) {
+            if (isCorrect) {
+              btn.classList.add("correct");
+            } else {
+              btn.classList.add("incorrect");
+            }
+          }
+        });
+
+        const expText = explanations[questionId];
+
+        if (isCorrect) {
+          feedback.innerHTML = `<span class="explanation-title">🎉 Correct!</span>${expText}`;
+          feedback.className = "feedback correct";
+          currentScore++;
+        } else {
+          feedback.innerHTML = `<span class="explanation-title">💡 Not quite!</span>${expText}`;
+          feedback.className = "feedback incorrect";
+
+          buttons.forEach((btn) => {
+            if (btn.getAttribute("onclick").includes("true")) {
+              btn.classList.add("correct");
+            }
+          });
+        }
+
+        totalAnswered++;
+        document.getElementById("score").textContent = currentScore;
+        document.getElementById("answered").textContent = totalAnswered;
       }
     </script>
   </body>
